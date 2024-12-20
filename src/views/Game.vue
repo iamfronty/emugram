@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, computed, useTemplateRef } from "vue";
-import { useRoute } from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { useRoute, onBeforeRouteLeave } from "vue-router";
 import { Nostalgist } from "nostalgist";
 
 const route = useRoute();
@@ -22,16 +22,12 @@ function getEmulator(system) {
   return emulatorMap[system.toLowerCase()] || "Emulator not found";
 }
 
-// Function to handle button presses
-function handleButtonPress(key) {
-  Nostalgist.press(key);
-}
+let nostalgist;
 
 try {
-  Nostalgist.configure({
+  nostalgist = Nostalgist.configure({
     core: getEmulator(consoleType.value),
     rom: gameUrl.value,
-    shader: "crt/crt-easymode",
   });
   loading.value = false;
 } catch (err) {
@@ -41,10 +37,18 @@ try {
 }
 
 onMounted(async () => {
-  await Nostalgist.launch({
+  nostalgist = await Nostalgist.launch({
     element: document.querySelector("canvas"),
   });
-  console.log('Nostalgist:', Nostalgist);
+  console.log("Nostalgist:", nostalgist.exit);
+});
+
+onBeforeRouteLeave(() => {
+  try {
+    nostalgist.exit();
+  } catch (error) {
+    console.error("Error during Nostalgist exit:", error);
+  }
 });
 </script>
 
@@ -82,31 +86,27 @@ onMounted(async () => {
       <div class="flex flex-col items-center space-y-2">
         <button
           class="w-12 h-12 bg-gray-500 rounded-full"
-          @click="() => handleButtonPress('up')"
-          @touchstart="() => handleButtonPress('up')"
+          @click="() => nostalgist.press('up')"
         >
           ▲
         </button>
         <div class="flex space-x-2">
           <button
             class="w-12 h-12 bg-gray-500 rounded-full"
-            @click="() => handleButtonPress('left')"
-            @touchstart="() => handleButtonPress('left')"
+            @click="() => nostalgist.press('left')"
           >
             ◀
           </button>
           <button
             class="w-12 h-12 bg-gray-500 rounded-full"
-            @click="() => handleButtonPress('right')"
-            @touchstart="() => handleButtonPress('right')"
+            @click="() => nostalgist.press('right')"
           >
             ▶
           </button>
         </div>
         <button
           class="w-12 h-12 bg-gray-500 rounded-full"
-          @click="() => handleButtonPress('down')"
-          @touchstart="() => handleButtonPress('down')"
+          @click="() => nostalgist.press('down')"
         >
           ▼
         </button>
@@ -116,15 +116,13 @@ onMounted(async () => {
       <div class="flex flex-col items-center space-y-2">
         <button
           class="w-12 h-12 bg-blue-500 rounded-full text-white font-bold"
-          @click="() => handleButtonPress('a')"
-          @touchstart="() => handleButtonPress('a')"
+          @click="() => nostalgist.press('a')"
         >
           A
         </button>
         <button
           class="w-12 h-12 bg-red-500 rounded-full text-white font-bold"
-          @click="() => handleButtonPress('b')"
-          @touchstart="() => handleButtonPress('b')"
+          @click="() => nostalgist.press('b')"
         >
           B
         </button>
@@ -134,15 +132,13 @@ onMounted(async () => {
       <div class="flex flex-col items-center space-y-2">
         <button
           class="w-20 h-12 bg-gray-700 rounded-lg text-white"
-          @click="() => handleButtonPress('start')"
-          @touchstart="() => handleButtonPress('start')"
+          @click="() => nostalgist.press('start')"
         >
           Start
         </button>
         <button
           class="w-20 h-12 bg-gray-700 rounded-lg text-white"
-          @click="() => handleButtonPress('select')"
-          @touchstart="() => handleButtonPress('select')"
+          @click="() => nostalgist.press('select')"
         >
           Select
         </button>

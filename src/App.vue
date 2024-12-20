@@ -1,30 +1,31 @@
 <script setup>
-  import { RouterView } from "vue-router";
-  import { ref, onBeforeMount } from "vue";
-  import { useRouter } from "vue-router";
-  const router = useRouter();
-  const isNavigatingBack = ref(false);
-  const routeHistory = ref([]);
-  router.beforeEach((to, from, next) => {
-    const toPath = to.path;
-    const fromPath = from.path;
-    if (
-      routeHistory.value.length > 1 &&
-      routeHistory.value[routeHistory.value.length - 2] === toPath
-    ) {
-      isNavigatingBack.value = true;
-      routeHistory.value.pop();
-    } else {
-      isNavigatingBack.value = false;
-      routeHistory.value.push(fromPath);
-    }
-    next();
-  });
-  router.afterEach(() => {
-    setTimeout(() => {
-      isNavigatingBack.value = false;
-    }, 150);
-  });
+import { RouterView } from "vue-router";
+import { ref, onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+const router = useRouter();
+const isNavigatingBack = ref(false);
+const routeHistory = ref([]);
+
+router.beforeEach((to, from, next) => {
+  const toPath = to.path;
+  const fromPath = from.path;
+  if (
+    routeHistory.value.length > 1 &&
+    routeHistory.value[routeHistory.value.length - 2] === toPath
+  ) {
+    isNavigatingBack.value = true;
+    routeHistory.value.pop();
+  } else {
+    isNavigatingBack.value = false;
+    routeHistory.value.push(fromPath);
+  }
+  next();
+});
+router.afterEach(() => {
+  setTimeout(() => {
+    isNavigatingBack.value = false;
+  }, 150);
+});
 </script>
 
 <template>
