@@ -1,6 +1,4 @@
 <script setup>
-import { ref, onMounted, computed } from "vue";
-import { useRoute, onBeforeRouteLeave } from "vue-router";
 import { Nostalgist } from "nostalgist";
 
 const route = useRoute();
@@ -54,9 +52,6 @@ onBeforeRouteLeave(() => {
 
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen p-4">
-    <RouterLink to="/" class="absolute top-0 left-0 right-0">
-      <Button label="Back" icon="pi pi-arrow-left" class="w-full mb-4" />
-    </RouterLink>
     <h1 class="text-3xl font-bold mb-6">{{ gameName }}</h1>
     <div v-if="loading" class="text-xl text-blue-600 animate-pulse">
       Loading game...

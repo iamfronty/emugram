@@ -2,6 +2,8 @@
 import { RouterView } from "vue-router";
 import { ref, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
+import { BackButton } from 'vue-tg'
+
 const router = useRouter();
 const isNavigatingBack = ref(false);
 const routeHistory = ref([]);
@@ -26,9 +28,14 @@ router.afterEach(() => {
     isNavigatingBack.value = false;
   }, 150);
 });
+
+function handleBackButton() {
+  router.go(-1)
+}
 </script>
 
 <template>
+  <BackButton @click="handleBackButton" />
   <router-view v-slot="{ Component, route }" class="max-w-xl m-auto">
     <transition
       :enter-active-class="
