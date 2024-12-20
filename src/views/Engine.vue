@@ -48,7 +48,7 @@ onMounted(() => {
         class="text-3xl font-bold mb-8 flex flex-col items-center justify-center"
       >
         <img
-          :src="'/src/assets/img/' + currentEngine + '.png'"
+          :src="`/img/${currentEngine}.png`"
           class="h-32 w-32 object-fill"
         />
         {{ currentEngine }}
